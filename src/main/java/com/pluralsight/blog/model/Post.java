@@ -5,20 +5,21 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Version
+    private Long version;
+    @NotNull
+    @Size(min = 4, max = 100)
     private String title;
-    @Column(length=1000000)
+    @Column(length = 1000000)
     @Lob
     private String body;
     @Temporal(TemporalType.DATE)
@@ -31,7 +32,7 @@ public class Post {
         super();
     }
 
-    public Post(String title, String body){//, Author author) {
+    public Post(String title, String body) {//, Author author) {
         this();
         this.title = title;
         this.body = body;
@@ -65,13 +66,13 @@ public class Post {
         return date;
     }
 
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     public String getDateStr() {
         DateFormat outputFormatter = new SimpleDateFormat("MM/dd/yyyy");
         return outputFormatter.format(this.date);
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
 
     public Author getAuthor() {
@@ -86,8 +87,8 @@ public class Post {
     public boolean equals(Object obj) {
         if (!(obj instanceof Post))
             return false;
-        Post otherPost = (Post)obj;
+        Post otherPost = (Post) obj;
         return this.title.equals(otherPost.getTitle()) &&
-               this.body.equals(otherPost.getBody());
+                this.body.equals(otherPost.getBody());
     }
 }
